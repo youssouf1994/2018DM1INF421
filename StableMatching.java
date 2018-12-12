@@ -81,7 +81,9 @@ class StableMatching implements StableMatchingInterface {
         int c = (a > b) ? b : a;
 
         singleMenGroupCount[currentMenGroup] -= c;
+        M[currentMenGroup][currentWomenGroup] += c;
         singleMenGroupCount[k] += c;
+        M[k][currentWomenGroup] -= c;
       }
       else {
         lastPropWomenGroup[currentMenGroup] += 1;
