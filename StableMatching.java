@@ -29,12 +29,12 @@ class StableMatching implements StableMatchingInterface {
       singleWomenGroupCount[j] = womenGroupCount[j];
     }
 
-    int[] lastPropWomenGroup = int [m];
+    int[] lastPropWomenGroup = new int [m];
     for (int i = 0; i < m; i++) {
       lastPropWomenGroup[i] = -1;
     }
 
-    int[] leastAttractiveMenGroup = int[w];
+    int[] leastAttractiveMenGroup = new int[w];
     for (int j = 0; j < w; j++) {
       leastAttractiveMenGroup[j] = m;
     }
