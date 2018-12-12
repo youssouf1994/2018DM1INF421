@@ -73,20 +73,22 @@ class StableMatching implements StableMatchingInterface {
           leastAttractiveMenGroup[currentMenGroup] = currentMenGroup;
         }
       }
-      else if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][k]) {
-        int k = leastAttractiveMenGroup[currentWomenGroup];
-        int a = M[k][currentWomenGroup];
-        int b = singleMenGroupCount[currentMenGroup];
-
-        int c = (a > b) ? b : a;
-
-        singleMenGroupCount[currentMenGroup] -= c;
-        M[currentMenGroup][currentWomenGroup] += c;
-        singleMenGroupCount[k] += c;
-        M[k][currentWomenGroup] -= c;
-      }
       else {
-        lastPropWomenGroup[currentMenGroup] += 1;
+        int k = leastAttractiveMenGroup[currentWomenGroup];
+        if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][k]) {
+          int a = M[k][currentWomenGroup];
+          int b = singleMenGroupCount[currentMenGroup];
+
+          int c = (a > b) ? b : a;
+
+          singleMenGroupCount[currentMenGroup] -= c;
+          M[currentMenGroup][currentWomenGroup] += c;
+          singleMenGroupCount[k] += c;
+          M[k][currentWomenGroup] -= c;
+        }
+        else {
+          lastPropWomenGroup[currentMenGroup] += 1;
+        }
       }
     }
 
