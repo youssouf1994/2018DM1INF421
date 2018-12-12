@@ -10,11 +10,23 @@ class StableMatching implements StableMatchingInterface {
     int m = menGroupCount.length;
     int w = womenGroupCount.length;
 
+    int[][] invWomenPrefs = new int[w][m];
+    for (int j = 0; j < w; j++) {
+      for (int i = 0; i < m; i++) {
+        invWomenPrefs[j][womenPrefs[j][i]] = i;
+      }
+    }
+
     int[] singleMenGroupCount = new int[m];
     int singleMen = 0;
     for (int i = 0; i < m; i++) {
       singleMenGroupCount[i] = menGroupCount[i];
       singleMen += singleMenGroupCount[i];
+    }
+
+    int[] singleWomenGroupCount = new int[w];
+    for (int j = 0; j < m; j++) {
+      singleWomenGroupCount[j] = womenGroupCount[j];
     }
 
     int[] lastPropWomenGroup = int [m];
@@ -24,7 +36,7 @@ class StableMatching implements StableMatchingInterface {
 
     int[] leastAttractiveMenGroup = int[w];
     for (int j = 0; j < w; j++) {
-      leastAttractiveMenGroup[j] = -1;
+      leastAttractiveMenGroup[j] = m;
     }
 
     int[][] M = new int[m][w];
@@ -39,6 +51,36 @@ class StableMatching implements StableMatchingInterface {
         }
       }
 
+      int currentWomenGroup = lastPropWomenGroup[currentMenGroup] + 1;
+
+      if (singleWomenGroupCount[currentWomenGroup] > 0) {
+        int a = singleWomenGroupCount[currentWomenGroup];
+        int b = singleMenGroupCount[currentMenGroup];
+
+        int c = (a > b) ? b : a;
+
+        singleMen -= c;
+        singleMenGroupCount[currentMenGroup] -= c;
+        singleWomenGroupCount[currentWomenGroup] -= c;
+        M[currentMenGroup][currentWomenGroup] += c;
+
+        if ((leastAttractiveMenGroup[currentWomenGroup] == m) || (invWomenPrefs[currentWomenGroup][leastAttractiveMenGroup[currentWomenGroup]] < invWomenPrefs[currentWomenGroup][currentMenGroup])) {
+          leastAttractiveMenGroup[currentMenGroup] = currentMenGroup;
+        }
+      }
+      else if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][k]) {
+        int k = leastAttractiveMenGroup[currentWomenGroup];
+        int a = M[k][currentWomenGroup];
+        int b = singleMenGroupCount[currentMenGroup];
+
+        int c = (a > b) ? b : a;
+
+        singleMen -= c;
+        singleMenGroupCount[currentMenGroup] -= c;
+      }
+      else {
+        lastPropWomenGroup[currentMenGroup] += 1;
+      }
     }
 
     return M;
