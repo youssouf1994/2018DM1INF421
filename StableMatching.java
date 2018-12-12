@@ -40,6 +40,11 @@ class StableMatching implements StableMatchingInterface {
     }
 
     int[][] M = new int[m][w];
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < w; j++) {
+        M[i][j] = 0;
+      }
+    }
 
     while (singleMen > 0) {
       int currentMenGroup = 0;
@@ -51,7 +56,7 @@ class StableMatching implements StableMatchingInterface {
         }
       }
 
-      int currentWomenGroup = lastPropWomenGroup[currentMenGroup];
+      int currentWomenGroup = menPrefs[currentMenGroup][lastPropWomenGroup[currentMenGroup]];
 
       if (singleWomenGroupCount[currentWomenGroup] > 0) {
         int a = singleWomenGroupCount[currentWomenGroup];
