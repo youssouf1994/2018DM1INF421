@@ -46,15 +46,20 @@ class StableMatching implements StableMatchingInterface {
       }
     }
 
+    boolean engagement = true;
+    int currentMenGroup = 0;
+
     while (singleMen > 0) {
-      int currentMenGroup = 0;
 
       // Search for the group with maximum single men.
-      for (int i = 1; i < m; i++) {
-        if (singleMenGroupCount[i] > singleMenGroupCount[currentMenGroup]) {
-          currentMenGroup = i;
+      if (engagement) {
+        for (int i = 1; i < m; i++) {
+          if (singleMenGroupCount[i] > singleMenGroupCount[currentMenGroup]) {
+            currentMenGroup = i;
+          }
         }
       }
+      engagement = true;
 
       int currentWomenGroup = menPrefs[currentMenGroup][lastPropWomenGroup[currentMenGroup]];
 
@@ -88,6 +93,7 @@ class StableMatching implements StableMatchingInterface {
         }
         else {
           lastPropWomenGroup[currentMenGroup] += 1;
+          engagement = false;
         }
       }
     }
