@@ -75,10 +75,16 @@ class StableMatching implements StableMatchingInterface {
       }
     }
 
+    /*
+      We create a Stack to store the groups of men with number of single larger
+      than the total number of single times 1/2m.
+      */
     Stack <Integer> singleMenGroupWithBigNumber = new Stack <Integer>();
 
     while (singleMen > 0) {
 
+      // Adding all the the groups of men with number of single larger
+      // than the total number of single times 1/2m.
       if (singleMenGroupWithBigNumber.isEmpty()) {
         for (int i = 0; i < m; i++) {
           if (singleMenGroupCount[i] > (singleMen /(2*m))) {
@@ -88,11 +94,15 @@ class StableMatching implements StableMatchingInterface {
       }
 
       while (!singleMenGroupWithBigNumber.isEmpty()) {
-
+        // Get the group of men.
         int currentMenGroup = singleMenGroupWithBigNumber.pop();
+
+        // Get the group of women currentMenGroup want to propose.
         int currentWomenGroup = menPrefs[currentMenGroup][mostUnproposedWomenGroup[currentMenGroup]];
 
+        // Check if there is single woman if the currentWomenGroup.
         if (singleWomenGroupCount[currentWomenGroup] > 0) {
+          // Match the group of men with the group of women.
           int a = singleWomenGroupCount[currentWomenGroup];
           int b = singleMenGroupCount[currentMenGroup];
 
@@ -107,7 +117,11 @@ class StableMatching implements StableMatchingInterface {
           M[currentMenGroup][currentWomenGroup] += c;
         }
         else {
+          // All women in currentWomenGroup are engaged we look for the least attractive
+          // man engaged to this group.
           Integer leastAttractiveMenGroup = menGroupEngagedTo.get(currentWomenGroup).peek();
+          // Check if the least attractive man engaged to a women in the current women group
+          // is less attractive to this group than the current men group.
           if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][leastAttractiveMenGroup]) {
             int a = M[leastAttractiveMenGroup][currentWomenGroup];
             int b = singleMenGroupCount[currentMenGroup];
