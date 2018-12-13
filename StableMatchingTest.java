@@ -28,11 +28,11 @@ public class StableMatchingTest {
     // whatever the box itself requires.
 
     public final static int LARGE = 8192;
-    
+
     // Maximum dimension of matrix for all tests, except those with n=m=w.
-	
+
     public final static int LARGE_NONUNIT = 4096;
-    
+
 
     // At each size, we generate a certain number of random instances.
 
@@ -89,7 +89,7 @@ public class StableMatchingTest {
     }
 
     // This method prints a preference matrix.
-    
+
     void printPreferences (int[][] prefs)
     {
         int n = prefs.length;
@@ -105,7 +105,7 @@ public class StableMatchingTest {
         out.println("The parameters of this test run were:");
         out.printf("n = %d\n", n);
         out.printf("m = %d\n", menGroupCount.length);
-        out.printf("w = %d\n", womenGroupCount.length);        
+        out.printf("w = %d\n", womenGroupCount.length);
         out.println("menGroupCount =");
         out.println(Arrays.toString(menGroupCount));
         out.println("womenGroupCount =");
@@ -156,7 +156,7 @@ public class StableMatchingTest {
         for (int s : womenGroupCount)
             womenCount += s;
         assert (n == womenCount);
-        
+
         out.println();
         out.printf("n = %d, m = %d, w = %d: running...\n", n, menGroupCount.length, womenGroupCount.length);
 
@@ -183,7 +183,7 @@ public class StableMatchingTest {
                 int[] wgc =  Arrays.copyOf(womenGroupCount, womenGroupCount.length);
                 int[][] mp = deepCopy2D(menPrefs);
                 int[][] wp = deepCopy2D(womenPrefs);
-                
+
                 long startTime = System.currentTimeMillis();
                 try {
                     mar = box.constructStableMatching(mgc, wgc, mp, wp);
@@ -226,7 +226,7 @@ public class StableMatchingTest {
             fail();
             return;
         }
-        
+
         // The thread has terminated on its own.
 
         // If it has raised an exception, log it.
@@ -249,10 +249,10 @@ public class StableMatchingTest {
             fail();
             return;
         }
-        
+
         int m = menGroupCount.length;
         int w = womenGroupCount.length;
-        
+
         if (mar.length != m)  {
             out.println("FAILURE: INVALID 1st DIMENSION OF RESULT!");
             out.printf("Your code returns an array of length %d,\nwhereas an array of length %d was expected.\n",
@@ -262,8 +262,8 @@ public class StableMatchingTest {
             fail();
             return;
         }
-      
-        
+
+
         int sumMar = 0;
         int[] sumMarMen = new int[m];
         int[] sumMarWomen = new int[w];
@@ -301,7 +301,7 @@ public class StableMatchingTest {
                 }
             }
         }
-        
+
         // Check if correct number of men and women are married in each group (matching condition)
         for (int i=0; i<m; i++)
             if (sumMarMen[i] != menGroupCount[i]){
@@ -313,7 +313,7 @@ public class StableMatchingTest {
                 fail();
                 return;
             }
-        
+
         for (int j=0; j<w; j++)
             if (sumMarWomen[j] != womenGroupCount[j]){
                 out.println("FAILURE: WRONG NUMBER OF WOMEN MARRIED!");
@@ -324,7 +324,7 @@ public class StableMatchingTest {
                 fail();
                 return;
             }
-        
+
         // Now, check matching for stability.
 
         int[][] revMenPrefs = new int[m][];
@@ -334,7 +334,7 @@ public class StableMatchingTest {
         for (int j = 0; j < w; j++)
             revWomenPrefs[j] = inversePermutation(womenPrefs[j]);
 
-        // Find least preferred wife (menPrefs[i][worstWifeIndex[i]]) for a man from every group i 
+        // Find least preferred wife (menPrefs[i][worstWifeIndex[i]]) for a man from every group i
         int[] worstWifeIndex = new int[m];
         for (int i=0; i<m; i++)
             for (int jx=w-1; jx>=0; jx--)
@@ -342,8 +342,8 @@ public class StableMatchingTest {
                     worstWifeIndex[i] = jx;
                     break;
                 }
-        
-        // Find least preferred husband (womenPrefs[j][worstHusbandIndex[j]]) for a woman from every group j 
+
+        // Find least preferred husband (womenPrefs[j][worstHusbandIndex[j]]) for a woman from every group j
         int[] worstHusbandIndex = new int[w];
         for (int j=0; j<w; j++)
             for (int ix=m-1; ix>=0; ix--)
@@ -351,7 +351,7 @@ public class StableMatchingTest {
                     worstHusbandIndex[j] = ix;
                     break;
                 }
-        
+
         for (int i=0; i<m; i++)
             for (int j=0; j<w; j++) {
                 if (revWomenPrefs[j][i] < worstHusbandIndex[j] && revMenPrefs[i][j] < worstWifeIndex[i]) {
@@ -367,7 +367,7 @@ public class StableMatchingTest {
                     fail();
                     return;
                 }
-            }        
+            }
 
         out.println("SUCCESS!");
         successes++;
@@ -442,7 +442,7 @@ public class StableMatchingTest {
         return prefs;
     }
 
-    
+
     // Returns integer array of 1s of length l
     int[] unit (int l)
     {
@@ -450,7 +450,7 @@ public class StableMatchingTest {
         Arrays.fill(arr, 1);
         return arr;
     }
-    
+
     // This method submits the box to a series of tests with given group size arrays.
 
     public void test (int[] menGroupCount, int[] womenGroupCount)
@@ -459,7 +459,7 @@ public class StableMatchingTest {
 
         int m = menGroupCount.length;
         int w = womenGroupCount.length;
-        
+
         int[] identityM = identityArray(m);
         int[] identityW = identityArray(w);
         int[] reverseM = reverseIdentityArray(m);
@@ -491,7 +491,7 @@ public class StableMatchingTest {
         res[1] = new int[w];
         int n = 0;
         if (nEstimate > m*w) {
-            int boundPerSquare = 1 + (2 * nEstimate / (m*w)); 
+            int boundPerSquare = 1 + (2 * nEstimate / (m*w));
             for (int i=0; i < m; i++)
                 for (int j=0; j < w; j++) {
                     int rv = random.nextInt(boundPerSquare) + 1;
@@ -506,7 +506,7 @@ public class StableMatchingTest {
             Arrays.fill(res[0], 1);
             for (int k= nEstimate - m; k>0; k--)
                 res[0][random.nextInt(m)]++;
-            Arrays.fill(res[1], 1);            
+            Arrays.fill(res[1], 1);
             for (int k= nEstimate - w; k>0; k--)
                 res[1][random.nextInt(w)]++;
             n = nEstimate;
@@ -519,7 +519,7 @@ public class StableMatchingTest {
 
     // This method submits the box to a series of tests at multiple sizes.
 
-    public void test (char testType) 
+    public void test (char testType)
     {
         out.printf("Starting test suite %c...\n\n", testType);
 
@@ -542,9 +542,9 @@ public class StableMatchingTest {
         switch (testType) {
             case 'A': nBound = 1000000000; break;
             case 'B': nBound = LARGE; break;
-            default:  nBound = -1;                    
+            default:  nBound = -1;
         }
-        
+
         for (int nEstimate : nRange) {
             if (nEstimate < nBound)
                 for (int m = 1; m <= LARGE_NONUNIT; m *= 4)
@@ -552,12 +552,11 @@ public class StableMatchingTest {
                         int[][] mw = randomMW(m, w, nEstimate, nBound);
                         if (mw != null)
                             test (mw[0], mw[1]);
-                    }                    
+                    }
         }
-        
+
         out.println();
         out.printf("Done test suite %c. In total, %d success(es) and %d failure(s).\n",
                 testType, successes, failures);
    }
 };
-
