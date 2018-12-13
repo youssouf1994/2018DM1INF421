@@ -3,29 +3,6 @@ import java.util.*;
 
 class StableMatching implements StableMatchingInterface {
 
-  class PrefComparator implements Comparator<Integer> {
-    int[] prefs;
-    PrefComparator(int[] prefs) {
-      int n = prefs.length;
-      this.prefs = prefs;
-    }
-
-    @Override
-    public int compare(Integer i, Integer j) {
-      if (this.prefs[i] < this.prefs[j]) {
-        return 1;
-      }
-      else {
-        if (this.prefs[j] < this.prefs[i]) {
-          return -1;
-        }
-        else {
-          return 0;
-        }
-      }
-    }
-  }
-
   public int[][] constructStableMatching (
     int[] menGroupCount,
     int[] womenGroupCount,
@@ -72,14 +49,25 @@ class StableMatching implements StableMatchingInterface {
     }
     /*
       For every group of women we store all groups of men engaded to the women group.
-      We store every group in PriorityQueue to have a direct access of the least att-
-      ractive men for this group.
+      We store every group of men engaged to the women group in PriorityQueue to
+      have a direct access of the least attractive men for this group.
       */
     ArrayList<PriorityQueue <Integer>> menGroupEngagedTo = new ArrayList<PriorityQueue <Integer>>(w);
     for (int j = 0; j < w; j++) {
-      menGroupEngagedTo.add(new PriorityQueue<Integer> (m, new PrefComparator(invWomenPrefs[j])));
+      /*
+        The comparator of the PriorityQueue is compatible with preferences of the
+        current women group.
+        */
+      final int jfinal = j;
+      menGroupEngagedTo.add(new PriorityQueue<Integer> (m, new Comparator<Integer>() {
+        @Override
+        public int compare (Integer i, Integer ip) {
+          return invWomenPrefs[jfinal][ip] - invWomenPrefs[jfinal][i];
+        }
+      }));
     }
 
+    // The matching matrix.
     int[][] M = new int[m][w];
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < w; j++) {
