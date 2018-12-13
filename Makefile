@@ -7,7 +7,6 @@ Main.class: $(wildcard *.java)
 
 clean:
 	rm -f *~ *.class
-
+	
 test: all
 	time java -ea -Xmx3G Main
-
