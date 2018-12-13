@@ -1,5 +1,35 @@
 
+import java.util.*;
+
 class StableMatching implements StableMatchingInterface {
+
+  class PrefComparator implements Comparator<Integer> {
+    int[] prefs;
+    PrefComparator(int[] prefs) {
+      int n = prefs.length;
+      this.prefs = new int[n];
+
+      for (int i = 0; i < n; i++) {
+        this.prefs[i] = prefs[i];
+      }
+    }
+
+    @Override
+    public int compare(Integer i, Integer j) {
+      assert (i < this.prefs.length && j < this.prefs.length);
+      if (this.prefs[i] < this.prefs[j]) {
+        return 1;
+      }
+      else {
+        if (this.prefs[j] < this.prefs[i]) {
+          return -1;
+        }
+        else {
+          return 0;
+        }
+      }
+    }
+  }
 
   public int[][] constructStableMatching (
     int[] menGroupCount,
@@ -34,9 +64,9 @@ class StableMatching implements StableMatchingInterface {
       lastPropWomenGroup[i] = -1;
     }
 
-    int[] leastAttractiveMenGroup = new int[w];
+    ArrayList<PriorityQueue <Integer>> menGroupEngagedTo = new ArrayList<PriorityQueue <Integer>>(w);
     for (int j = 0; j < w; j++) {
-      leastAttractiveMenGroup[j] = m;
+      menGroupEngagedTo.add(new PriorityQueue<Integer> (m, new PrefComparator(invWomenPrefs[j])));
     }
 
     int[][] M = new int[m][w];
@@ -59,8 +89,8 @@ class StableMatching implements StableMatchingInterface {
           }
         }
       }
-      engagement = true;
 
+      engagement = true;
       int currentWomenGroup = menPrefs[currentMenGroup][lastPropWomenGroup[currentMenGroup]];
 
       if (singleWomenGroupCount[currentWomenGroup] > 0) {
@@ -73,23 +103,29 @@ class StableMatching implements StableMatchingInterface {
         singleMenGroupCount[currentMenGroup] -= c;
         singleWomenGroupCount[currentWomenGroup] -= c;
         M[currentMenGroup][currentWomenGroup] += c;
-
-        if ((leastAttractiveMenGroup[currentWomenGroup] == m) || (invWomenPrefs[currentWomenGroup][leastAttractiveMenGroup[currentWomenGroup]] < invWomenPrefs[currentWomenGroup][currentMenGroup])) {
-          leastAttractiveMenGroup[currentMenGroup] = currentMenGroup;
+        if (!(menGroupEngagedTo.get(currentWomenGroup).contains(currentMenGroup))) {
+          menGroupEngagedTo.get(currentWomenGroup).add(currentMenGroup);
         }
       }
       else {
-        int k = leastAttractiveMenGroup[currentWomenGroup];
-        if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][k]) {
-          int a = M[k][currentWomenGroup];
+        int leastAttractiveMenGroup = menGroupEngagedTo.get(currentWomenGroup).remove();
+        if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][leastAttractiveMenGroup]) {
+          int a = M[leastAttractiveMenGroup][currentWomenGroup];
           int b = singleMenGroupCount[currentMenGroup];
 
           int c = (a > b) ? b : a;
 
           singleMenGroupCount[currentMenGroup] -= c;
           M[currentMenGroup][currentWomenGroup] += c;
-          singleMenGroupCount[k] += c;
-          M[k][currentWomenGroup] -= c;
+          if (!(menGroupEngagedTo.get(currentWomenGroup).contains(currentMenGroup))) {
+            menGroupEngagedTo.get(currentWomenGroup).add(currentMenGroup);
+          }
+
+          singleMenGroupCount[leastAttractiveMenGroup] += c;
+          M[leastAttractiveMenGroup][currentWomenGroup] -= c;
+          if (c < a) {
+            menGroupEngagedTo.get(currentWomenGroup).add(leastAttractiveMenGroup);
+          }
         }
         else {
           lastPropWomenGroup[currentMenGroup] += 1;
