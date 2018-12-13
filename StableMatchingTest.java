@@ -234,6 +234,7 @@ public class StableMatchingTest {
             out.println("FAILURE: EXCEPTION!");
             out.println("Your code unexpectedly throws an exception:");
             out.println(exception);
+            throw exception;
             printParameters(n, menGroupCount, womenGroupCount, menPrefs, womenPrefs);
             fail();
             return;
