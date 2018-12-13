@@ -107,7 +107,8 @@ class StableMatching implements StableMatchingInterface {
           int b = singleMenGroupCount[currentMenGroup];
 
           int c = (a > b) ? b : a;
-
+          // If all men in the group of men were not engaged to any women in the women
+          // group add the group of men to the men engaged to the group women.
           if (M[currentMenGroup][currentWomenGroup] == 0) {
             menGroupEngagedTo.get(currentWomenGroup).offer(currentMenGroup);
           }
@@ -123,11 +124,15 @@ class StableMatching implements StableMatchingInterface {
           // Check if the least attractive man engaged to a women in the current women group
           // is less attractive to this group than the current men group.
           if (invWomenPrefs[currentWomenGroup][currentMenGroup] < invWomenPrefs[currentWomenGroup][leastAttractiveMenGroup]) {
+            // Match the current men group with the number of women in the current women group
+            // engaged to the least attractive man for this women group.
             int a = M[leastAttractiveMenGroup][currentWomenGroup];
             int b = singleMenGroupCount[currentMenGroup];
 
             int c = (a > b) ? b : a;
 
+            // If all men in the group of men were not engaged to any women in the women
+            // group add the group of men to the men engaged to the group women.
             if (M[currentMenGroup][currentWomenGroup] == 0) {
               menGroupEngagedTo.get(currentWomenGroup).offer(currentMenGroup);
             }
@@ -136,11 +141,16 @@ class StableMatching implements StableMatchingInterface {
 
             singleMenGroupCount[leastAttractiveMenGroup] += c;
             M[leastAttractiveMenGroup][currentWomenGroup] -= c;
+
+            // If all men in the least attractive group that were engaged to the women
+            // then remove the least attractive group of men from the groups engaged to
+            // group women
             if (M[leastAttractiveMenGroup][currentWomenGroup] == 0) {
               menGroupEngagedTo.get(currentWomenGroup).remove();
             }
           }
           else {
+            // The proposal was not accepted. We go to the next women group.
             mostUnproposedWomenGroup[currentMenGroup] += 1;
           }
         }
