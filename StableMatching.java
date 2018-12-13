@@ -87,21 +87,21 @@ class StableMatching implements StableMatchingInterface {
       }
     }
 
-    LinkedList <Integer> singleMenGroupWithBigNumber = new LinkedList <Integer>();
+    Stack <Integer> singleMenGroupWithBigNumber = new Stack <Integer>();
 
     while (singleMen > 0) {
 
       if (singleMenGroupWithBigNumber.isEmpty()) {
         for (int i = 0; i < m; i++) {
           if (singleMenGroupCount[i] > (singleMen /(2*m))) {
-            singleMenGroupWithBigNumber.add(i);
+            singleMenGroupWithBigNumber.push(i);
           }
         }
       }
 
       while (!singleMenGroupWithBigNumber.isEmpty()) {
 
-        int currentMenGroup = singleMenGroupWithBigNumber.poll();
+        int currentMenGroup = singleMenGroupWithBigNumber.pop();
         int currentWomenGroup = menPrefs[currentMenGroup][mostUnproposedWomenGroup[currentMenGroup]];
 
         if (singleWomenGroupCount[currentWomenGroup] > 0) {
@@ -143,7 +143,7 @@ class StableMatching implements StableMatchingInterface {
           }
         }
         if (singleMenGroupCount[currentMenGroup] > (singleMen /(2*m))) {
-          singleMenGroupWithBigNumber.add(currentMenGroup);
+          singleMenGroupWithBigNumber.push(currentMenGroup);
         }
       }
     }
